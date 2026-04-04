@@ -1,0 +1,25 @@
+{
+  "name": "Goal Tracker Challenge",
+  "short_name": "GoalTracker",
+  "description": "Offline-first challenge tracking with daily habit check-ins and Google Drive backup.",
+  "theme_color": "#f6f3ed",
+  "background_color": "#f6f3ed",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
