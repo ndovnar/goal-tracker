@@ -6,7 +6,7 @@ const statusClasses = {
   complete: "border border-moss-200 bg-moss-50 text-moss-900",
   partial: "border border-sand-200 bg-sand-50 text-sand-900",
   failed: "border border-rose-200 bg-rose-50 text-rose-700",
-  upcoming: "border border-slate-200 bg-white/72 text-slate-500",
+  upcoming: "border border-slate-200 bg-slate-100/90 text-slate-500",
 };
 
 export function DayGrid({
@@ -26,7 +26,7 @@ export function DayGrid({
           key={day.date}
           type="button"
           className={cn(
-            "flex aspect-square flex-col items-center justify-center rounded-[28px] text-sm font-semibold transition duration-200 hover:border-slate-300 hover:bg-white",
+            "flex aspect-square flex-col items-center justify-center rounded-[28px] text-sm font-semibold transition duration-200 hover:border-slate-300 hover:bg-slate-100",
             statusClasses[day.derivedStatus],
             selectedDate === day.date && "border-ink ring-4 ring-ink/5",
           )}

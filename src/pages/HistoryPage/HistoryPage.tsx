@@ -51,7 +51,7 @@ export function HistoryPage(): JSX.Element {
       description={t("history.description")}
     >
       <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <Card className="space-y-4 bg-white/68">
+        <Card className="space-y-4 bg-slate-50/88">
           <p className="text-sm font-semibold text-ink">
             {t("history.challengeFilter")}
           </p>
@@ -75,7 +75,7 @@ export function HistoryPage(): JSX.Element {
             ))}
           </div>
         </Card>
-        <Card className="space-y-4 bg-white/68">
+        <Card className="space-y-4 bg-slate-50/88">
           <p className="text-sm font-semibold text-ink">
             {t("history.statusFilter")}
           </p>

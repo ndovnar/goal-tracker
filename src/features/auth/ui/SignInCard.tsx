@@ -19,8 +19,8 @@ export function SignInCard({
     t("welcome.dailyCheckIns"),
   ];
   return (
-    <Card className="space-y-6 bg-white/84">
-      <div className="inline-flex w-fit items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
+    <Card className="space-y-6 bg-slate-50/88">
+      <div className="inline-flex w-fit items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">
         Private sync
       </div>
       <div className="space-y-3">
@@ -32,11 +32,11 @@ export function SignInCard({
         </h2>
         <p className="text-sm text-slate-600">{t("signIn.description")}</p>
       </div>
-      <div className="grid gap-3 rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4">
+      <div className="grid gap-3 rounded-[28px] border border-slate-200/80 bg-slate-100/82 p-4">
         {highlights.map((highlight) => (
           <div
             key={highlight}
-            className="flex items-center gap-3 rounded-[24px] bg-white/80 px-4 py-3"
+            className="flex items-center gap-3 rounded-[24px] bg-slate-50/92 px-4 py-3"
           >
             <span className="h-2 w-2 rounded-full bg-moss-500" />
             <span className="text-sm font-medium text-slate-700">

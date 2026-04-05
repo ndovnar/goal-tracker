@@ -4,9 +4,9 @@ import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/shared/lib/cn";
 
 const toneClasses = {
-  success: "border-moss-200 bg-white/90 text-moss-900",
-  error: "border-rose-200 bg-white/92 text-rose-900",
-  info: "border-slate-200 bg-white/90 text-slate-900",
+  success: "border-moss-300 bg-slate-50/96 text-moss-800",
+  error: "border-rose-700 bg-slate-50/96 text-rose-300",
+  info: "border-slate-200 bg-slate-50/96 text-slate-800",
 };
 
 export function ToastViewport(): JSX.Element {

@@ -13,7 +13,7 @@ export function LocaleSwitcher({
   return (
     <div
       className={cn(
-        "inline-flex rounded-full border border-slate-200/80 bg-white/72 p-1 shadow-soft backdrop-blur",
+        "inline-flex rounded-full border border-slate-200/80 bg-slate-100/84 p-1 shadow-soft backdrop-blur",
         className,
       )}
       aria-label={t("common.language")}
@@ -26,8 +26,8 @@ export function LocaleSwitcher({
           className={cn(
             "min-w-12 rounded-full px-3 py-2 text-xs font-semibold transition duration-200",
             locale === item
-              ? "bg-ink text-white shadow-soft"
-              : "text-slate-500 hover:bg-slate-100 hover:text-ink",
+              ? "bg-moss-500 text-slate-900 shadow-soft"
+              : "text-slate-500 hover:bg-slate-200 hover:text-ink",
           )}
           onClick={() => setLocale(item)}
         >

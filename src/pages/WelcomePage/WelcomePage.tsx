@@ -37,14 +37,14 @@ export function WelcomePage(): JSX.Element {
     navigate("/", { replace: true });
   }
   return (
-    <main className="min-h-screen bg-hero-radial">
+    <main className="min-h-screen bg-canvas bg-hero-radial text-ink">
       <div className="mx-auto grid min-h-screen max-w-6xl gap-10 px-4 pb-8 pt-6 md:grid-cols-[1.08fr_0.92fr] md:px-6">
         <section className="flex flex-col justify-center gap-8 md:py-8">
           <div className="flex justify-end md:hidden">
             <LocaleSwitcher />
           </div>
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-3 rounded-full border border-slate-200/80 bg-white/72 px-4 py-2 shadow-soft backdrop-blur">
+            <div className="inline-flex items-center gap-3 rounded-full border border-slate-200/80 bg-slate-100/84 px-4 py-2 shadow-soft backdrop-blur">
               <span className="h-2 w-2 rounded-full bg-moss-500" />
               <p className="text-sm font-semibold text-slate-700">
                 {t("welcome.eyebrow")}
@@ -58,13 +58,13 @@ export function WelcomePage(): JSX.Element {
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-[28px] border border-slate-200/80 bg-white/72 p-5 shadow-card backdrop-blur">
+            <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/86 p-5 shadow-card backdrop-blur">
               <p className="text-sm font-medium text-slate-500">
                 {t("welcome.offlineFirst")}
               </p>
               <p className="mt-4 text-3xl font-semibold text-ink">IndexedDB</p>
             </div>
-            <div className="rounded-[28px] border border-slate-200/80 bg-white/72 p-5 shadow-card backdrop-blur">
+            <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/86 p-5 shadow-card backdrop-blur">
               <p className="text-sm font-medium text-slate-500">
                 {t("welcome.cloudBackup")}
               </p>
@@ -72,7 +72,7 @@ export function WelcomePage(): JSX.Element {
                 Drive appData
               </p>
             </div>
-            <div className="rounded-[28px] border border-slate-200/80 bg-white/72 p-5 shadow-card backdrop-blur">
+            <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/86 p-5 shadow-card backdrop-blur">
               <p className="text-sm font-medium text-slate-500">
                 {t("welcome.dailyCheckIns")}
               </p>
@@ -94,7 +94,7 @@ export function WelcomePage(): JSX.Element {
             />
           </div>
           <div className="grid w-full max-w-xl gap-3 sm:grid-cols-2">
-            <div className="rounded-[28px] border border-slate-200/80 bg-white/64 p-4 backdrop-blur">
+            <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/78 p-4 backdrop-blur">
               <p className="text-sm font-medium text-slate-500">
                 Recovery ready
               </p>
@@ -102,7 +102,7 @@ export function WelcomePage(): JSX.Element {
                 Export snapshots or merge backups without leaving the app.
               </p>
             </div>
-            <div className="rounded-[28px] border border-slate-200/80 bg-white/64 p-4 backdrop-blur">
+            <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/78 p-4 backdrop-blur">
               <p className="text-sm font-medium text-slate-500">
                 Quiet by default
               </p>

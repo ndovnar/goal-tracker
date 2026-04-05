@@ -86,7 +86,7 @@ export function ChallengeDetailPage(): JSX.Element {
       title={challenge.title}
       description={challenge.description}
     >
-      <Card className="space-y-5 bg-white/68">
+      <Card className="space-y-5 bg-slate-50/88">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
             <p className="text-sm font-semibold text-slate-500">
@@ -152,7 +152,7 @@ export function ChallengeDetailPage(): JSX.Element {
           </Card>
         </div>
       </Card>
-      <Card className="space-y-4 bg-white/68">
+      <Card className="space-y-4 bg-slate-50/88">
         <div className="space-y-1">
           <h3 className="text-xl font-semibold text-ink">
             {t("challengeDetail.timeline")}
@@ -173,7 +173,7 @@ export function ChallengeDetailPage(): JSX.Element {
           selectedDay={data.selectedDay}
           checklistItems={data.checklistItems}
         />
-        <Card className="space-y-4 bg-white/68">
+        <Card className="space-y-4 bg-slate-50/88">
           <div className="space-y-1">
             <h3 className="text-xl font-semibold text-ink">
               {t("challengeDetail.habitAdherence")}

@@ -15,7 +15,7 @@ export function ChallengeCard({
   const { locale, t } = useI18n();
   return (
     <Link to={`/challenge/${summary.id}`} className="block">
-      <Card className="space-y-5 bg-white/68 transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:bg-white/84 hover:shadow-soft">
+      <Card className="space-y-5 bg-slate-50/88 transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:bg-slate-100/92 hover:shadow-soft">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-slate-500">

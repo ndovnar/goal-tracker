@@ -66,13 +66,13 @@ export function DailyCheckInPanel({
   }, [formState.isDirty, persistCheckIn, selectedDay, values]);
   if (!selectedDay) {
     return (
-      <Card className="bg-white/68">
+      <Card className="bg-slate-50/88">
         <p className="text-sm text-slate-600">{t("checkIn.pickDay")}</p>
       </Card>
     );
   }
   return (
-    <Card className="space-y-5 bg-white/68">
+    <Card className="space-y-5 bg-slate-50/88">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <p className="text-xs font-semibold text-slate-500">

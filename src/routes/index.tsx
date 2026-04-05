@@ -83,8 +83,8 @@ function AppBootstrap(): JSX.Element {
   }, [handleOnlineState]);
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center px-4">
-        <div className="rounded-[32px] border border-slate-200/80 bg-white/84 px-6 py-5 shadow-card backdrop-blur-xl">
+      <div className="flex min-h-screen items-center justify-center bg-canvas bg-hero-radial px-4 text-ink">
+        <div className="rounded-[32px] border border-slate-200/80 bg-slate-50/90 px-6 py-5 shadow-card backdrop-blur-xl">
           <p className="font-display text-2xl text-ink">
             {t("common.loadingTracker")}
           </p>
@@ -105,7 +105,7 @@ function ProtectedLayout(): JSX.Element {
   return (
     <>
       <ToastViewport />
-      <div className="min-h-screen pb-32">
+      <div className="min-h-screen bg-canvas bg-hero-radial pb-32 text-ink">
         <Outlet />
       </div>
       <BottomNav />

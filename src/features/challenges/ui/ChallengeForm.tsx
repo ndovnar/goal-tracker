@@ -53,7 +53,7 @@ export function ChallengeForm({
       className="space-y-6"
       onSubmit={handleSubmit((values) => onSubmit(values))}
     >
-      <Card className="space-y-4 bg-white/68">
+      <Card className="space-y-4 bg-slate-50/88">
         <InputField
           label={t("createChallenge.form.challengeTitle")}
           placeholder={t("createChallenge.form.challengeTitlePlaceholder")}
@@ -83,7 +83,7 @@ export function ChallengeForm({
           />
         </div>
       </Card>
-      <Card className="space-y-4 bg-white/68">
+      <Card className="space-y-4 bg-slate-50/88">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-ink">
@@ -133,7 +133,7 @@ export function ChallengeForm({
                   {t("createChallenge.form.remove")}
                 </button>
               </div>
-              <label className="mt-3 flex items-center gap-3 rounded-[24px] border border-slate-200/80 bg-white/80 px-4 py-3 text-sm font-medium text-ink">
+              <label className="mt-3 flex items-center gap-3 rounded-[24px] border border-slate-200/80 bg-slate-100/90 px-4 py-3 text-sm font-medium text-ink">
                 <input
                   type="checkbox"
                   className="h-5 w-5 rounded border-slate-300 text-moss-600"

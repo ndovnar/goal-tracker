@@ -12,13 +12,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "border border-ink bg-ink text-white shadow-soft hover:border-slate-900 hover:bg-slate-900 disabled:border-slate-300 disabled:bg-slate-300 disabled:text-white",
+    "border border-moss-500 bg-moss-500 text-slate-900 shadow-soft hover:border-moss-400 hover:bg-moss-400 disabled:border-slate-300 disabled:bg-slate-300 disabled:text-slate-600",
   secondary:
-    "border border-slate-200 bg-white/72 text-ink hover:border-slate-300 hover:bg-white disabled:border-slate-200 disabled:bg-white/50 disabled:text-slate-400",
+    "border border-slate-200 bg-slate-100/88 text-ink hover:border-slate-300 hover:bg-slate-50 disabled:border-slate-200 disabled:bg-slate-100/60 disabled:text-slate-400",
   ghost:
-    "border border-transparent bg-transparent text-slate-600 hover:bg-white/60 hover:text-ink disabled:text-slate-400",
+    "border border-transparent bg-transparent text-slate-600 hover:bg-slate-100/70 hover:text-ink disabled:text-slate-400",
   danger:
-    "border border-rose-500 bg-rose-500 text-white shadow-soft hover:border-rose-600 hover:bg-rose-600 disabled:border-rose-200 disabled:bg-rose-200 disabled:text-white",
+    "border border-rose-500 bg-rose-500 text-rose-50 shadow-soft hover:border-rose-400 hover:bg-rose-400 disabled:border-rose-900 disabled:bg-rose-900 disabled:text-rose-300",
 };
 
 export function Button({
@@ -34,7 +34,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-moss-100 disabled:cursor-not-allowed",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-moss-200/60 disabled:cursor-not-allowed",
         variantClasses[variant],
         fullWidth && "w-full",
         className,

@@ -18,7 +18,7 @@ export function DueCheckInList({
           key={item.challengeId}
           to={`/challenge/${item.challengeId}?date=${item.date}`}
         >
-          <Card className="flex items-center justify-between gap-4 bg-white/68 transition duration-200 hover:border-slate-300 hover:bg-white/84">
+          <Card className="flex items-center justify-between gap-4 bg-slate-50/88 transition duration-200 hover:border-slate-300 hover:bg-slate-100/92">
             <div className="space-y-1">
               <p className="text-xs font-semibold text-slate-500">
                 {t("common.day")} {item.dayNumber}

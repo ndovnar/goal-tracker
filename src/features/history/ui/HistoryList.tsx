@@ -14,7 +14,7 @@ export function HistoryList({
       {entries.map((entry) => (
         <Card
           key={`${entry.challengeId}-${entry.date}`}
-          className="flex items-center justify-between gap-4 bg-white/68"
+          className="flex items-center justify-between gap-4 bg-slate-50/88"
         >
           <div className="space-y-1">
             <p className="text-xs font-semibold text-slate-500">
