@@ -1,19 +1,33 @@
-const STATIC_CACHE = "goal-tracker-static-v1";
-const RUNTIME_CACHE = "goal-tracker-runtime-v1";
+const STATIC_CACHE = "goal-tracker-static-v2";
+const RUNTIME_CACHE = "goal-tracker-runtime-v2";
+
+function getScopeUrl() {
+  return new URL(self.registration.scope);
+}
+
+function getAppShellUrl() {
+  return new URL(".", getScopeUrl()).toString();
+}
+
+function getIndexUrl() {
+  return new URL("index.html", getScopeUrl()).toString();
+}
+
+function getStaticAssetUrls() {
+  return [
+    "",
+    "index.html",
+    "manifest.webmanifest",
+    "icon.svg",
+    "maskable-icon.svg",
+  ].map((path) => new URL(path || ".", getScopeUrl()).toString());
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(STATIC_CACHE)
-      .then((cache) =>
-        cache.addAll([
-          "/",
-          "/index.html",
-          "/manifest.webmanifest",
-          "/icon.svg",
-          "/maskable-icon.svg",
-        ]),
-      ),
+      .then((cache) => cache.addAll(getStaticAssetUrls())),
   );
   self.skipWaiting();
 });
@@ -45,15 +59,17 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const clonedResponse = response.clone();
-          caches
-            .open(RUNTIME_CACHE)
-            .then((cache) => cache.put("/", clonedResponse));
+          if (response.status === 200) {
+            const clonedResponse = response.clone();
+            caches
+              .open(RUNTIME_CACHE)
+              .then((cache) => cache.put(getAppShellUrl(), clonedResponse));
+          }
           return response;
         })
         .catch(async () => {
-          const cachedResponse = await caches.match("/");
-          return cachedResponse ?? caches.match("/index.html");
+          const cachedResponse = await caches.match(getAppShellUrl());
+          return cachedResponse ?? caches.match(getIndexUrl());
         }),
     );
     return;

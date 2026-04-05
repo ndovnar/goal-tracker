@@ -68,6 +68,25 @@ To preview the production build locally:
 npm run preview
 ```
 
+## GitHub Pages Deployment
+
+1. Push the repository to GitHub.
+2. In GitHub, open `Settings -> Pages` and set the source to `GitHub Actions`.
+3. In `Settings -> Secrets and variables -> Actions -> Variables`, add:
+   - `VITE_GOOGLE_CLIENT_ID`
+4. Optional: add `DEPLOY_BASE_PATH` if you need to override the default GitHub Pages project path.
+   - Leave it empty for the default `https://<user>.github.io/<repo>/` deployment.
+   - Set it to `/` if you later move the site to a custom domain root.
+5. Push to `main`.
+
+The workflow in `.github/workflows/deploy.yml` builds and publishes `dist` automatically.
+
+Notes:
+
+- Vite now resolves the production `base` automatically from `GITHUB_REPOSITORY` during GitHub Actions builds.
+- The app uses hash routing automatically for sub-path deployments, so refreshes work on GitHub Pages.
+- PWA assets and the service worker are base-path aware, so installs and offline caching keep working under the repository path.
+
 ## Quality Checks
 
 ```bash
@@ -85,6 +104,7 @@ npm run typecheck
 6. Create an `OAuth client ID` for a `Web application`.
 7. Add your development origin, for example `http://localhost:5173`, to the authorized JavaScript origins.
 8. Put the generated client ID into `VITE_GOOGLE_CLIENT_ID`.
+9. Add your production origin, for example `https://<user>.github.io`, to the authorized JavaScript origins before using GitHub Pages.
 
 ## Required Google Scope
 

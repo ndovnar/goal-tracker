@@ -1,5 +1,6 @@
 import {
   createBrowserRouter,
+  createHashRouter,
   Navigate,
   Outlet,
   RouterProvider,
@@ -113,7 +114,7 @@ function ProtectedLayout(): JSX.Element {
   );
 }
 
-const router = createBrowserRouter([
+const routes = [
   {
     element: <AppBootstrap />,
     children: [
@@ -152,7 +153,13 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+];
+
+const router = (
+  import.meta.env.PROD && import.meta.env.BASE_URL !== "/"
+    ? createHashRouter
+    : createBrowserRouter
+)(routes);
 
 export function AppRouter(): JSX.Element {
   return <RouterProvider router={router} />;
