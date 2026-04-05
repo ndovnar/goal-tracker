@@ -4,6 +4,8 @@ const googleAppName =
 const googleDriveFileName =
   import.meta.env.VITE_GOOGLE_DRIVE_FILE_NAME ?? "goal-tracker-challenge.json";
 
+console.log(!!googleClientId);
+
 export const env = {
   googleClientId,
   googleAppName,
