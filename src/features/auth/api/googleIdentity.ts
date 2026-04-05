@@ -46,7 +46,7 @@ const GOOGLE_SCOPE =
 
 let googleIdentityScriptPromise: Promise<void> | null = null;
 
-function getGoogleIdentityScriptPromise(): Promise<void> {
+export function ensureGoogleIdentityReady(): Promise<void> {
   if (googleIdentityScriptPromise) {
     return googleIdentityScriptPromise;
   }
@@ -108,7 +108,7 @@ async function requestToken(
   if (!hasGoogleAuthConfig()) {
     throw new Error(translateCurrent("errors.missingGoogleClientId"));
   }
-  await getGoogleIdentityScriptPromise();
+  await ensureGoogleIdentityReady();
   return new Promise((resolve, reject) => {
     const tokenClient = window.google?.accounts.oauth2.initTokenClient({
       client_id: env.googleClientId,
@@ -159,7 +159,7 @@ export async function revokeGoogleAccess(
   if (!accessToken) {
     return;
   }
-  await getGoogleIdentityScriptPromise();
+  await ensureGoogleIdentityReady();
   await new Promise<void>((resolve) => {
     window.google?.accounts.id.disableAutoSelect();
     window.google?.accounts.oauth2.revoke(accessToken, () => resolve());

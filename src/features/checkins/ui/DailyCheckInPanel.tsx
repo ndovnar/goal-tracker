@@ -66,16 +66,16 @@ export function DailyCheckInPanel({
   }, [formState.isDirty, persistCheckIn, selectedDay, values]);
   if (!selectedDay) {
     return (
-      <Card>
+      <Card className="bg-white/68">
         <p className="text-sm text-slate-600">{t("checkIn.pickDay")}</p>
       </Card>
     );
   }
   return (
-    <Card className="space-y-5">
+    <Card className="space-y-5 bg-white/68">
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
-          <p className="text-xs font-semibold text-moss-700">
+          <p className="text-xs font-semibold text-slate-500">
             {t("checkIn.title")}
           </p>
           <h3 className="text-xl font-semibold text-ink">
@@ -93,7 +93,7 @@ export function DailyCheckInPanel({
         {checklistItems.map((item) => (
           <label
             key={item.id}
-            className="flex min-h-14 items-center gap-3 rounded-3xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-ink"
+            className="flex min-h-14 items-center gap-3 rounded-[28px] border border-slate-200/80 bg-slate-50/80 px-4 py-3 text-sm font-medium text-ink"
           >
             <input
               type="checkbox"

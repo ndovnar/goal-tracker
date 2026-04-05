@@ -66,6 +66,12 @@ const translations = {
       missingConfig:
         "Add `VITE_GOOGLE_CLIENT_ID` to enable Google sign-in and Drive backup.",
     },
+    auth: {
+      logIn: "Log in",
+      logOut: "Log out",
+      loggingIn: "Logging in...",
+      loggingOut: "Logging out...",
+    },
     dashboard: {
       title: "Your challenge dashboard",
       description:
@@ -290,6 +296,12 @@ const translations = {
       continueLocalOnly: "Продолжить только локально",
       missingConfig:
         "Добавьте `VITE_GOOGLE_CLIENT_ID`, чтобы включить вход через Google и резервное копирование в Drive.",
+    },
+    auth: {
+      logIn: "Войти",
+      logOut: "Выйти",
+      loggingIn: "Вход...",
+      loggingOut: "Выход...",
     },
     dashboard: {
       title: "Панель челленджей",

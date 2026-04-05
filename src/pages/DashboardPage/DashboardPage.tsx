@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+import { GoogleLoginButton } from "@/features/auth/ui/GoogleLoginButton";
 import { getDashboardData } from "@/shared/lib/db/repositories";
 import { useAsyncValue } from "@/shared/lib/useAsyncValue";
 import { LoadingCards } from "@/shared/ui/LoadingCards";
@@ -21,6 +22,7 @@ export function DashboardPage(): JSX.Element {
   );
   return (
     <PageShell
+      actions={<GoogleLoginButton />}
       title={t("dashboard.title")}
       description={t("dashboard.description")}
     >
@@ -35,7 +37,7 @@ export function DashboardPage(): JSX.Element {
                 {t("dashboard.today")}
               </h2>
               <Link
-                className="text-sm font-semibold text-moss-700"
+                className="text-sm font-semibold text-slate-500 transition hover:text-ink"
                 to="/history"
               >
                 {t("dashboard.openHistory")}
@@ -56,7 +58,7 @@ export function DashboardPage(): JSX.Element {
                 {t("dashboard.activeChallenges")}
               </h2>
               <Link
-                className="text-sm font-semibold text-moss-700"
+                className="text-sm font-semibold text-slate-500 transition hover:text-ink"
                 to="/challenge/new"
               >
                 {t("dashboard.createNew")}

@@ -23,8 +23,9 @@ export function InputField({
       <span>{label}</span>
       <input
         className={cn(
-          "min-h-12 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-moss-400 focus:ring-2 focus:ring-moss-100",
-          error && "border-rose-300 focus:border-rose-400 focus:ring-rose-100",
+          "min-h-12 rounded-[24px] border border-slate-200/80 bg-white/72 px-4 py-3 text-sm text-ink outline-none transition duration-200 placeholder:text-slate-400 focus:border-moss-300 focus:bg-white focus:ring-4 focus:ring-moss-100/70 disabled:bg-slate-50 disabled:text-slate-400",
+          error &&
+            "border-rose-300 focus:border-rose-400 focus:ring-rose-100/80",
           className,
         )}
         {...props}
@@ -45,8 +46,9 @@ export function TextAreaField({
       <span>{label}</span>
       <textarea
         className={cn(
-          "min-h-28 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink outline-none transition focus:border-moss-400 focus:ring-2 focus:ring-moss-100",
-          error && "border-rose-300 focus:border-rose-400 focus:ring-rose-100",
+          "min-h-28 rounded-[24px] border border-slate-200/80 bg-white/72 px-4 py-3 text-sm text-ink outline-none transition duration-200 placeholder:text-slate-400 focus:border-moss-300 focus:bg-white focus:ring-4 focus:ring-moss-100/70 disabled:bg-slate-50 disabled:text-slate-400",
+          error &&
+            "border-rose-300 focus:border-rose-400 focus:ring-rose-100/80",
           className,
         )}
         {...props}

@@ -6,3 +6,4 @@ dist
 .env.production.local
 .vite
 coverage
+.idea

@@ -1,6 +1,8 @@
 import type { AppLocale, AuthSession } from "@/shared/types/domain";
 
 const AUTH_SESSION_KEY = "goal-tracker-auth-session";
+const ACCESS_TOKEN_KEY = "goal-tracker-access-token";
+const ACCESS_TOKEN_EXPIRES_AT_KEY = "goal-tracker-access-token-expires-at";
 const APP_LOCALE_KEY = "goal-tracker-locale";
 
 export function loadAuthSession(): AuthSession {
@@ -33,6 +35,44 @@ export function loadAuthSession(): AuthSession {
 
 export function saveAuthSession(session: AuthSession): void {
   localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+}
+
+export function loadGoogleAccessToken(): {
+  accessToken: string | null;
+  accessTokenExpiresAt: string | null;
+} {
+  try {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+    const accessTokenExpiresAt = localStorage.getItem(
+      ACCESS_TOKEN_EXPIRES_AT_KEY,
+    );
+    return {
+      accessToken: accessToken || null,
+      accessTokenExpiresAt: accessTokenExpiresAt || null,
+    };
+  } catch {
+    return {
+      accessToken: null,
+      accessTokenExpiresAt: null,
+    };
+  }
+}
+
+export function saveGoogleAccessToken(
+  accessToken: string,
+  expiresAt: string | null,
+): void {
+  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  if (expiresAt) {
+    localStorage.setItem(ACCESS_TOKEN_EXPIRES_AT_KEY, expiresAt);
+    return;
+  }
+  localStorage.removeItem(ACCESS_TOKEN_EXPIRES_AT_KEY);
+}
+
+export function clearGoogleAccessToken(): void {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN_EXPIRES_AT_KEY);
 }
 
 export function getBrowserLocale(): AppLocale {

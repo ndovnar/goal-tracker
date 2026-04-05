@@ -15,10 +15,10 @@ export function ChallengeCard({
   const { locale, t } = useI18n();
   return (
     <Link to={`/challenge/${summary.id}`} className="block">
-      <Card className="space-y-4 transition hover:-translate-y-1 hover:shadow-soft">
+      <Card className="space-y-5 bg-white/68 transition duration-200 hover:-translate-y-1 hover:border-slate-300 hover:bg-white/84 hover:shadow-soft">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-moss-700">
+            <p className="text-xs font-semibold text-slate-500">
               {t("challengeDetail.dayProgress", {
                 current: Math.max(summary.currentDay, 1),
                 duration: summary.durationDays,
@@ -34,19 +34,19 @@ export function ChallengeCard({
         </div>
         <ProgressBar value={summary.completionPercentage} />
         <div className="grid grid-cols-3 gap-3 text-sm text-slate-600">
-          <div className="rounded-2xl bg-slate-50 p-3">
+          <div className="rounded-[24px] border border-slate-200/80 bg-slate-50/80 p-3">
             <p className="text-xs">{t("dashboard.card.completion")}</p>
             <p className="mt-2 text-lg font-semibold text-ink">
               {summary.completionPercentage}%
             </p>
           </div>
-          <div className="rounded-2xl bg-slate-50 p-3">
+          <div className="rounded-[24px] border border-slate-200/80 bg-slate-50/80 p-3">
             <p className="text-xs">{t("dashboard.card.currentStreak")}</p>
             <p className="mt-2 text-lg font-semibold text-ink">
               {summary.currentStreak}
             </p>
           </div>
-          <div className="rounded-2xl bg-slate-50 p-3">
+          <div className="rounded-[24px] border border-slate-200/80 bg-slate-50/80 p-3">
             <p className="text-xs">{t("dashboard.card.failedDays")}</p>
             <p className="mt-2 text-lg font-semibold text-ink">
               {summary.failedDays}

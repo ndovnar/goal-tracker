@@ -34,9 +34,12 @@ export function StatsOverview({
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {items.map((item) => (
-        <Card key={item.label}>
-          <p className="text-sm text-slate-600">{item.label}</p>
-          <p className="mt-3 font-display text-4xl text-ink">{item.value}</p>
+        <Card key={item.label} className="space-y-6 bg-white/68">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm font-medium text-slate-500">{item.label}</p>
+            <span className="h-2 w-2 rounded-full bg-moss-500" />
+          </div>
+          <p className="font-display text-4xl text-ink">{item.value}</p>
         </Card>
       ))}
     </div>

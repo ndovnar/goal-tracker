@@ -1,9 +1,11 @@
 import { useDeferredValue, useState } from "react";
 
+import { GoogleLoginButton } from "@/features/auth/ui/GoogleLoginButton";
 import { getChallenges, getHistoryEntries } from "@/shared/lib/db/repositories";
 import { useI18n } from "@/shared/lib/i18n";
 import { useAsyncValue } from "@/shared/lib/useAsyncValue";
 import { Button } from "@/shared/ui/Button";
+import { Card } from "@/shared/ui/Card";
 import { EmptyState } from "@/shared/ui/EmptyState";
 import { LoadingCards } from "@/shared/ui/LoadingCards";
 import { PageShell } from "@/shared/ui/PageShell";
@@ -44,15 +46,16 @@ export function HistoryPage(): JSX.Element {
   }
   return (
     <PageShell
+      actions={<GoogleLoginButton />}
       title={t("history.title")}
       description={t("history.description")}
     >
       <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-card">
+        <Card className="space-y-4 bg-white/68">
           <p className="text-sm font-semibold text-ink">
             {t("history.challengeFilter")}
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               variant={selectedChallengeId === "all" ? "primary" : "secondary"}
               onClick={() => setSelectedChallengeId("all")}
@@ -71,12 +74,12 @@ export function HistoryPage(): JSX.Element {
               </Button>
             ))}
           </div>
-        </div>
-        <div className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-card">
+        </Card>
+        <Card className="space-y-4 bg-white/68">
           <p className="text-sm font-semibold text-ink">
             {t("history.statusFilter")}
           </p>
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {statusFilters.map((status) => (
               <Button
                 key={status}
@@ -89,7 +92,7 @@ export function HistoryPage(): JSX.Element {
               </Button>
             ))}
           </div>
-        </div>
+        </Card>
       </section>
       {loading || !data ? (
         <LoadingCards count={4} />

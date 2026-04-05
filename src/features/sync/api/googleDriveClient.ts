@@ -12,6 +12,18 @@ interface DriveFileLookupResult {
   snapshot: AppSnapshot | null;
 }
 
+export class DriveApiError extends Error {
+  public readonly status: number;
+  public readonly reason: string | null;
+
+  public constructor(message: string, status: number, reason: string | null) {
+    super(message);
+    this.name = "DriveApiError";
+    this.status = status;
+    this.reason = reason;
+  }
+}
+
 function getHeaders(accessToken: string): HeadersInit {
   return {
     Authorization: `Bearer ${accessToken}`,
@@ -21,11 +33,14 @@ function getHeaders(accessToken: string): HeadersInit {
 function buildMultipartBody(
   fileName: string,
   snapshot: AppSnapshot,
+  options?: {
+    includeParent?: boolean;
+  },
 ): { body: string; boundary: string } {
   const boundary = `goal-tracker-${crypto.randomUUID()}`;
   const metadata = JSON.stringify({
     name: fileName,
-    parents: ["appDataFolder"],
+    ...(options?.includeParent ? { parents: ["appDataFolder"] } : {}),
   });
   const content = JSON.stringify(snapshot);
   const body = [
@@ -45,6 +60,43 @@ function buildMultipartBody(
   };
 }
 
+async function parseDriveError(response: Response): Promise<{
+  reason: string | null;
+  message: string;
+}> {
+  try {
+    const data = (await response.json()) as {
+      error?: {
+        message?: string;
+        errors?: Array<{
+          reason?: string;
+          message?: string;
+        }>;
+      };
+    };
+    const reason = data.error?.errors?.[0]?.reason;
+    const message = data.error?.errors?.[0]?.message ?? data.error?.message;
+    return {
+      reason: reason ?? null,
+      message: message ?? response.statusText,
+    };
+  } catch {
+    return {
+      reason: null,
+      message: response.statusText,
+    };
+  }
+}
+
+async function createDriveApiError(
+  response: Response,
+  fallbackMessage: string,
+): Promise<DriveApiError> {
+  const driveError = await parseDriveError(response);
+  const fullMessage = `${fallbackMessage}: ${driveError.message}`;
+  return new DriveApiError(fullMessage, response.status, driveError.reason);
+}
+
 async function getFileContents(
   accessToken: string,
   fileId: string,
@@ -56,7 +108,10 @@ async function getFileContents(
     return null;
   }
   if (!response.ok) {
-    throw new Error(translateCurrent("errors.driveFetchFailed"));
+    throw await createDriveApiError(
+      response,
+      translateCurrent("errors.driveFetchFailed"),
+    );
   }
   const rawJson = (await response.json()) as unknown;
   return parseAppSnapshot(rawJson);
@@ -75,7 +130,10 @@ export async function getRemoteSnapshot(
     },
   );
   if (!response.ok) {
-    throw new Error(translateCurrent("errors.driveQueryFailed"));
+    throw await createDriveApiError(
+      response,
+      translateCurrent("errors.driveQueryFailed"),
+    );
   }
   const data = (await response.json()) as {
     files?: Array<{ id: string }>;
@@ -101,6 +159,7 @@ export async function uploadRemoteSnapshot(
   const { body, boundary } = buildMultipartBody(
     env.googleDriveFileName,
     snapshot,
+    { includeParent: !existingFileId },
   );
   const method = existingFileId ? "PATCH" : "POST";
   const targetUrl = existingFileId
@@ -115,7 +174,10 @@ export async function uploadRemoteSnapshot(
     body,
   });
   if (!response.ok) {
-    throw new Error(translateCurrent("errors.driveUploadFailed"));
+    throw await createDriveApiError(
+      response,
+      translateCurrent("errors.driveUploadFailed"),
+    );
   }
   const data = (await response.json()) as { id?: string };
   if (!data.id) {

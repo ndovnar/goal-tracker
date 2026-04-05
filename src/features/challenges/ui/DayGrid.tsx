@@ -3,10 +3,10 @@ import { useI18n } from "@/shared/lib/i18n";
 import type { ChallengeDayState } from "@/shared/types/domain";
 
 const statusClasses = {
-  complete: "bg-moss-500 text-white",
-  partial: "bg-sand-400 text-white",
-  failed: "bg-rose-400 text-white",
-  upcoming: "bg-slate-100 text-slate-500",
+  complete: "border border-moss-200 bg-moss-50 text-moss-900",
+  partial: "border border-sand-200 bg-sand-50 text-sand-900",
+  failed: "border border-rose-200 bg-rose-50 text-rose-700",
+  upcoming: "border border-slate-200 bg-white/72 text-slate-500",
 };
 
 export function DayGrid({
@@ -26,9 +26,9 @@ export function DayGrid({
           key={day.date}
           type="button"
           className={cn(
-            "flex aspect-square flex-col items-center justify-center rounded-3xl text-sm font-semibold transition",
+            "flex aspect-square flex-col items-center justify-center rounded-[28px] text-sm font-semibold transition duration-200 hover:border-slate-300 hover:bg-white",
             statusClasses[day.derivedStatus],
-            selectedDate === day.date && "ring-4 ring-ink/10",
+            selectedDate === day.date && "border-ink ring-4 ring-ink/5",
           )}
           onClick={() => onSelect(day.date)}
         >

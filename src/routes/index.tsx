@@ -6,7 +6,9 @@ import {
 } from "react-router-dom";
 import { useEffect, useEffectEvent, useState } from "react";
 
+import { ensureGoogleIdentityReady } from "@/features/auth/api/googleIdentity";
 import { syncService } from "@/features/sync/api/syncService";
+import { hasGoogleAuthConfig } from "@/shared/lib/env";
 import { useI18n } from "@/shared/lib/i18n";
 import { initializeDatabase } from "@/shared/lib/db/repositories";
 import { BottomNav } from "@/shared/ui/BottomNav";
@@ -22,12 +24,20 @@ import { WelcomePage } from "@/pages/WelcomePage/WelcomePage";
 function AppBootstrap(): JSX.Element {
   const { locale, t } = useI18n();
   const authSession = useAppStore((state) => state.authSession);
+  const accessToken = useAppStore((state) => state.accessToken);
+  const accessTokenExpiresAt = useAppStore(
+    (state) => state.accessTokenExpiresAt,
+  );
+  const online = useAppStore((state) => state.online);
   const setOnline = useAppStore((state) => state.setOnline);
+  const syncPersistedAuthState = useAppStore(
+    (state) => state.syncPersistedAuthState,
+  );
   const [ready, setReady] = useState(false);
   const handleOnlineState = useEffectEvent(() => {
-    const online = navigator.onLine;
-    setOnline(online);
-    if (online && authSession.connected) {
+    const nextOnline = navigator.onLine;
+    setOnline(nextOnline);
+    if (nextOnline && authSession.connected) {
       void syncService.syncNow({ prompt: "", silent: true });
     }
   });
@@ -35,13 +45,34 @@ function AppBootstrap(): JSX.Element {
     document.documentElement.lang = locale;
   }, [locale]);
   useEffect(() => {
+    if (!hasGoogleAuthConfig()) {
+      return;
+    }
+    void ensureGoogleIdentityReady().catch(() => undefined);
+  }, []);
+  useEffect(() => {
     void initializeDatabase().then(() => {
       setReady(true);
-      if (navigator.onLine && authSession.connected) {
-        void syncService.syncNow({ prompt: "", silent: true });
-      }
     });
-  }, [authSession.connected]);
+  }, []);
+  useEffect(() => {
+    if (!ready || !online || !authSession.connected) {
+      return;
+    }
+    void syncService.syncNow({ prompt: "", silent: true });
+  }, [ready, online, authSession.connected, accessToken, accessTokenExpiresAt]);
+  useEffect(() => {
+    function handleStorageSync(event: StorageEvent): void {
+      if (event.storageArea !== localStorage) {
+        return;
+      }
+      syncPersistedAuthState();
+    }
+    window.addEventListener("storage", handleStorageSync);
+    return () => {
+      window.removeEventListener("storage", handleStorageSync);
+    };
+  }, [syncPersistedAuthState]);
   useEffect(() => {
     window.addEventListener("online", handleOnlineState);
     window.addEventListener("offline", handleOnlineState);
@@ -53,7 +84,7 @@ function AppBootstrap(): JSX.Element {
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
-        <div className="rounded-[28px] border border-white/70 bg-white/95 px-6 py-5 shadow-card">
+        <div className="rounded-[32px] border border-slate-200/80 bg-white/84 px-6 py-5 shadow-card backdrop-blur-xl">
           <p className="font-display text-2xl text-ink">
             {t("common.loadingTracker")}
           </p>

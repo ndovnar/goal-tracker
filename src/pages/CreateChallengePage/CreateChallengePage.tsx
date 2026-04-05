@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { GoogleLoginButton } from "@/features/auth/ui/GoogleLoginButton";
 import { createChallengeWithSideEffects } from "@/features/challenges/api/challengeService";
 import { ChallengeForm } from "@/features/challenges/ui/ChallengeForm";
 import { useI18n } from "@/shared/lib/i18n";
@@ -36,6 +37,7 @@ export function CreateChallengePage(): JSX.Element {
   }
   return (
     <PageShell
+      actions={<GoogleLoginButton />}
       title={t("createChallenge.title")}
       description={t("createChallenge.description")}
     >

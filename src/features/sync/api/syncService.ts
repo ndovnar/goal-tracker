@@ -2,6 +2,7 @@ import { isAfter } from "date-fns";
 
 import { connectGoogle } from "@/features/auth/api/googleIdentity";
 import {
+  DriveApiError,
   getRemoteSnapshot,
   uploadRemoteSnapshot,
 } from "@/features/sync/api/googleDriveClient";
@@ -15,6 +16,20 @@ import {
 import { mergeSnapshots } from "@/features/sync/api/merge";
 import { translateCurrent } from "@/shared/lib/i18n";
 import { useAppStore } from "@/store/useAppStore";
+
+function shouldInvalidateAccessToken(error: DriveApiError): boolean {
+  if (error.status === 401) {
+    return true;
+  }
+  if (error.status !== 403) {
+    return false;
+  }
+  return [
+    "authError",
+    "insufficientPermissions",
+    "insufficientFilePermissions",
+  ].includes(error.reason ?? "");
+}
 
 class SyncService {
   private syncTimer: number | null = null;
@@ -42,7 +57,9 @@ class SyncService {
     return this.activeSync;
   }
 
-  private async getActiveAccessToken(prompt: "" | "consent"): Promise<string> {
+  private async getActiveAccessToken(
+    prompt: "" | "consent",
+  ): Promise<string | null> {
     const {
       accessToken,
       accessTokenExpiresAt,
@@ -57,7 +74,11 @@ class SyncService {
       return accessToken;
     }
     if (!authSession.connected) {
-      throw new Error(translateCurrent("errors.connectGoogleFirst"));
+      return null;
+    }
+    // Silent/background sync must never open the Google popup outside a user gesture.
+    if (prompt !== "consent") {
+      return null;
     }
     const nextConnection = await connectGoogle(prompt);
     setGoogleConnection(nextConnection);
@@ -68,14 +89,28 @@ class SyncService {
     prompt: "" | "consent";
     silent?: boolean;
   }): Promise<void> {
-    const { online, authSession, pushToast, bumpDataVersion } =
-      useAppStore.getState();
+    const {
+      online,
+      authSession,
+      pushToast,
+      bumpDataVersion,
+      clearGoogleAccessToken,
+    } = useAppStore.getState();
     if (!online || !authSession.connected) {
+      return;
+    }
+    const accessToken = await this.getActiveAccessToken(options.prompt);
+    if (!accessToken) {
+      if (!options.silent && options.prompt === "consent") {
+        pushToast({
+          title: translateCurrent("errors.connectGoogleFirst"),
+          tone: "error",
+        });
+      }
       return;
     }
     await markSyncAttempt("syncing");
     try {
-      const accessToken = await this.getActiveAccessToken(options.prompt);
       const localSnapshot = await getAppSnapshot();
       const remoteData = await getRemoteSnapshot(accessToken);
       const mergedSnapshot = mergeSnapshots(localSnapshot, remoteData.snapshot);
@@ -94,6 +129,12 @@ class SyncService {
         });
       }
     } catch (error) {
+      if (
+        error instanceof DriveApiError &&
+        shouldInvalidateAccessToken(error)
+      ) {
+        clearGoogleAccessToken();
+      }
       const message =
         error instanceof Error
           ? error.message

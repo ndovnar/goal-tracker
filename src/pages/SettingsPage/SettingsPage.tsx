@@ -2,10 +2,9 @@ import type { ChangeEvent } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  connectGoogle,
-  revokeGoogleAccess,
-} from "@/features/auth/api/googleIdentity";
+import { connectGoogleDriveAndSync } from "@/features/auth/api/connectGoogleDriveAndSync";
+import { revokeGoogleAccess } from "@/features/auth/api/googleIdentity";
+import { GoogleLoginButton } from "@/features/auth/ui/GoogleLoginButton";
 import { syncService } from "@/features/sync/api/syncService";
 import {
   getAppSnapshot,
@@ -35,7 +34,6 @@ export function SettingsPage(): JSX.Element {
   const clearGoogleConnection = useAppStore(
     (state) => state.clearGoogleConnection,
   );
-  const setGoogleConnection = useAppStore((state) => state.setGoogleConnection);
   const pushToast = useAppStore((state) => state.pushToast);
   const bumpDataVersion = useAppStore((state) => state.bumpDataVersion);
   const { data, refresh } = useAsyncValue(async () => {
@@ -52,9 +50,7 @@ export function SettingsPage(): JSX.Element {
   }, [dataVersion]);
   async function handleConnectGoogle(): Promise<void> {
     try {
-      const connection = await connectGoogle("consent");
-      setGoogleConnection(connection);
-      await syncService.syncNow({ prompt: "", silent: false });
+      await connectGoogleDriveAndSync();
       await refresh();
     } catch (error) {
       pushToast({
@@ -132,6 +128,7 @@ export function SettingsPage(): JSX.Element {
   }
   return (
     <PageShell
+      actions={<GoogleLoginButton />}
       title={t("settings.title")}
       description={t("settings.description")}
     >
@@ -159,12 +156,12 @@ export function SettingsPage(): JSX.Element {
               variant="secondary"
               onClick={() => void handleDisconnectGoogle()}
             >
-              {t("settings.disconnect")}
+              {t("auth.logOut")}
             </Button>
           </div>
         ) : (
           <Button onClick={() => void handleConnectGoogle()}>
-            {t("settings.connectGoogleDrive")}
+            {t("auth.logIn")}
           </Button>
         )}
       </SettingsSection>
@@ -173,11 +170,11 @@ export function SettingsPage(): JSX.Element {
         description={t("settings.syncDescription")}
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2 rounded-3xl bg-slate-50 p-4">
+          <div className="space-y-2 rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4">
             <p className="text-sm text-slate-600">{t("settings.syncStatus")}</p>
             <StatusBadge value={data?.syncMetadata.syncState ?? "idle"} />
           </div>
-          <div className="space-y-2 rounded-3xl bg-slate-50 p-4">
+          <div className="space-y-2 rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4">
             <p className="text-sm text-slate-600">
               {t("settings.pendingChanges")}
             </p>
@@ -185,7 +182,7 @@ export function SettingsPage(): JSX.Element {
               {data?.pendingChanges.length ?? 0}
             </p>
           </div>
-          <div className="space-y-2 rounded-3xl bg-slate-50 p-4">
+          <div className="space-y-2 rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4">
             <p className="text-sm text-slate-600">{t("settings.lastSynced")}</p>
             <p className="text-lg font-semibold text-ink">
               {formatLongDateTime(
@@ -194,7 +191,7 @@ export function SettingsPage(): JSX.Element {
               )}
             </p>
           </div>
-          <div className="space-y-2 rounded-3xl bg-slate-50 p-4">
+          <div className="space-y-2 rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4">
             <p className="text-sm text-slate-600">{t("settings.lastError")}</p>
             <p className="text-sm font-medium text-ink">
               {data?.syncMetadata.lastError ?? t("settings.noSyncErrors")}
@@ -233,7 +230,7 @@ export function SettingsPage(): JSX.Element {
           className="hidden"
           onChange={(event) => void handleImportFile(event)}
         />
-        <div className="rounded-3xl bg-slate-50 p-4">
+        <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4">
           <p className="text-sm text-slate-600">
             {t("settings.currentSnapshot")}
           </p>

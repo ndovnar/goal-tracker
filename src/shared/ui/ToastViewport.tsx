@@ -4,9 +4,9 @@ import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/shared/lib/cn";
 
 const toneClasses = {
-  success: "border-moss-200 bg-moss-50 text-moss-900",
-  error: "border-rose-200 bg-rose-50 text-rose-900",
-  info: "border-slate-200 bg-white text-slate-900",
+  success: "border-moss-200 bg-white/90 text-moss-900",
+  error: "border-rose-200 bg-white/92 text-rose-900",
+  info: "border-slate-200 bg-white/90 text-slate-900",
 };
 
 export function ToastViewport(): JSX.Element {
@@ -23,12 +23,12 @@ export function ToastViewport(): JSX.Element {
     };
   }, [dismissToast, toasts]);
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-4 z-50 mx-auto flex max-w-md flex-col gap-3 px-4">
+    <div className="pointer-events-none fixed inset-x-0 top-5 z-50 mx-auto flex max-w-lg flex-col gap-3 px-4">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={cn(
-            "pointer-events-auto rounded-2xl border px-4 py-3 text-sm font-medium shadow-soft backdrop-blur",
+            "pointer-events-auto rounded-[24px] border px-4 py-3 text-sm font-medium shadow-soft backdrop-blur-xl",
             toneClasses[toast.tone],
           )}
         >

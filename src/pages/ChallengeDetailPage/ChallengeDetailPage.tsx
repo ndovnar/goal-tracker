@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
+import { GoogleLoginButton } from "@/features/auth/ui/GoogleLoginButton";
 import { deleteChallengeWithSideEffects } from "@/features/challenges/api/challengeService";
 import { DailyCheckInPanel } from "@/features/checkins/ui/DailyCheckInPanel";
 import { DayGrid } from "@/features/challenges/ui/DayGrid";
@@ -39,7 +40,10 @@ export function ChallengeDetailPage(): JSX.Element {
   }
   if (loading || !data) {
     return (
-      <PageShell title={t("challengeDetail.loadingTitle")}>
+      <PageShell
+        actions={<GoogleLoginButton />}
+        title={t("challengeDetail.loadingTitle")}
+      >
         {error ? <Card>{error}</Card> : <LoadingCards count={3} />}
       </PageShell>
     );
@@ -78,13 +82,14 @@ export function ChallengeDetailPage(): JSX.Element {
   }
   return (
     <PageShell
+      actions={<GoogleLoginButton />}
       title={challenge.title}
       description={challenge.description}
     >
-      <Card className="space-y-5">
+      <Card className="space-y-5 bg-white/68">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-moss-700">
+            <p className="text-sm font-semibold text-slate-500">
               {t("challengeDetail.dayProgress", {
                 current: Math.max(data.summary.currentDay, 1),
                 duration: data.summary.durationDays,
@@ -94,8 +99,7 @@ export function ChallengeDetailPage(): JSX.Element {
               {challenge.title}
             </h2>
             <p className="text-sm text-slate-600">
-              {formatDisplayDate(challenge.startDate, locale)}{" "}
-              {t("common.to")}{" "}
+              {formatDisplayDate(challenge.startDate, locale)} {t("common.to")}{" "}
               {formatDisplayDate(challenge.endDate, locale)}
             </p>
           </div>
@@ -114,7 +118,7 @@ export function ChallengeDetailPage(): JSX.Element {
         </div>
         <ProgressBar value={data.summary.completionPercentage} />
         <div className="grid gap-4 sm:grid-cols-4">
-          <Card className="bg-slate-50 shadow-none">
+          <Card className="border-slate-200/80 bg-slate-50/80 shadow-none">
             <p className="text-sm text-slate-600">
               {t("challengeDetail.completion")}
             </p>
@@ -122,7 +126,7 @@ export function ChallengeDetailPage(): JSX.Element {
               {data.summary.completionPercentage}%
             </p>
           </Card>
-          <Card className="bg-slate-50 shadow-none">
+          <Card className="border-slate-200/80 bg-slate-50/80 shadow-none">
             <p className="text-sm text-slate-600">
               {t("challengeDetail.completedDays")}
             </p>
@@ -130,7 +134,7 @@ export function ChallengeDetailPage(): JSX.Element {
               {data.summary.completedDays}
             </p>
           </Card>
-          <Card className="bg-slate-50 shadow-none">
+          <Card className="border-slate-200/80 bg-slate-50/80 shadow-none">
             <p className="text-sm text-slate-600">
               {t("challengeDetail.currentStreak")}
             </p>
@@ -138,7 +142,7 @@ export function ChallengeDetailPage(): JSX.Element {
               {data.summary.currentStreak}
             </p>
           </Card>
-          <Card className="bg-slate-50 shadow-none">
+          <Card className="border-slate-200/80 bg-slate-50/80 shadow-none">
             <p className="text-sm text-slate-600">
               {t("challengeDetail.longestStreak")}
             </p>
@@ -148,7 +152,7 @@ export function ChallengeDetailPage(): JSX.Element {
           </Card>
         </div>
       </Card>
-      <Card className="space-y-4">
+      <Card className="space-y-4 bg-white/68">
         <div className="space-y-1">
           <h3 className="text-xl font-semibold text-ink">
             {t("challengeDetail.timeline")}
@@ -169,7 +173,7 @@ export function ChallengeDetailPage(): JSX.Element {
           selectedDay={data.selectedDay}
           checklistItems={data.checklistItems}
         />
-        <Card className="space-y-4">
+        <Card className="space-y-4 bg-white/68">
           <div className="space-y-1">
             <h3 className="text-xl font-semibold text-ink">
               {t("challengeDetail.habitAdherence")}
@@ -180,7 +184,10 @@ export function ChallengeDetailPage(): JSX.Element {
           </div>
           <div className="space-y-3">
             {data.habitAdherence.map((item) => (
-              <div key={item.itemId} className="rounded-3xl bg-slate-50 p-4">
+              <div
+                key={item.itemId}
+                className="rounded-[28px] border border-slate-200/80 bg-slate-50/80 p-4"
+              >
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-ink">

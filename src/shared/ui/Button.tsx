@@ -12,12 +12,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-ink text-white shadow-soft hover:bg-slate-800 disabled:bg-slate-400 disabled:text-white",
+    "border border-ink bg-ink text-white shadow-soft hover:border-slate-900 hover:bg-slate-900 disabled:border-slate-300 disabled:bg-slate-300 disabled:text-white",
   secondary:
-    "bg-white text-ink border border-slate-200 hover:border-moss-300 hover:bg-moss-50 disabled:text-slate-400",
-  ghost: "bg-transparent text-ink hover:bg-white/70 disabled:text-slate-400",
+    "border border-slate-200 bg-white/72 text-ink hover:border-slate-300 hover:bg-white disabled:border-slate-200 disabled:bg-white/50 disabled:text-slate-400",
+  ghost:
+    "border border-transparent bg-transparent text-slate-600 hover:bg-white/60 hover:text-ink disabled:text-slate-400",
   danger:
-    "bg-sand-700 text-white shadow-soft hover:bg-sand-800 disabled:bg-sand-300 disabled:text-white",
+    "border border-rose-500 bg-rose-500 text-white shadow-soft hover:border-rose-600 hover:bg-rose-600 disabled:border-rose-200 disabled:bg-rose-200 disabled:text-white",
 };
 
 export function Button({
@@ -33,7 +34,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        "inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-moss-100 disabled:cursor-not-allowed",
         variantClasses[variant],
         fullWidth && "w-full",
         className,

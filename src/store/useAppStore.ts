@@ -1,10 +1,13 @@
 import { create } from "zustand";
 
 import {
+  clearGoogleAccessToken as clearStoredGoogleAccessToken,
   loadAppLocale,
   loadAuthSession,
+  loadGoogleAccessToken,
   saveAppLocale,
   saveAuthSession,
+  saveGoogleAccessToken,
 } from "@/shared/lib/storage";
 import type {
   AppLocale,
@@ -38,7 +41,9 @@ interface AppStoreState {
     accessToken: string;
     expiresAt: string | null;
   }) => void;
+  clearGoogleAccessToken: () => void;
   clearGoogleConnection: () => void;
+  syncPersistedAuthState: () => void;
   bumpDataVersion: () => void;
   pushToast: (toast: Omit<ToastMessage, "id">) => void;
   dismissToast: (toastId: string) => void;
@@ -46,12 +51,13 @@ interface AppStoreState {
 
 const initialAuthSession = loadAuthSession();
 const initialLocale = loadAppLocale();
+const initialGoogleAccessToken = loadGoogleAccessToken();
 
 export const useAppStore = create<AppStoreState>()((set) => ({
   authSession: initialAuthSession,
   locale: initialLocale,
-  accessToken: null,
-  accessTokenExpiresAt: null,
+  accessToken: initialGoogleAccessToken.accessToken,
+  accessTokenExpiresAt: initialGoogleAccessToken.accessTokenExpiresAt,
   online: navigator.onLine,
   dataVersion: 0,
   toasts: [],
@@ -91,6 +97,7 @@ export const useAppStore = create<AppStoreState>()((set) => ({
         onboardingCompleted: true,
       };
       saveAuthSession(nextSession);
+      saveGoogleAccessToken(accessToken, expiresAt);
       return {
         authSession: nextSession,
         accessToken,
@@ -106,10 +113,33 @@ export const useAppStore = create<AppStoreState>()((set) => ({
         onboardingCompleted: state.authSession.onboardingCompleted,
       };
       saveAuthSession(nextSession);
+      clearStoredGoogleAccessToken();
       return {
         authSession: nextSession,
         accessToken: null,
         accessTokenExpiresAt: null,
+      };
+    }),
+  clearGoogleAccessToken: () =>
+    set((state) => {
+      clearStoredGoogleAccessToken();
+      return {
+        authSession: {
+          ...state.authSession,
+          connected: Boolean(state.authSession.profile),
+        },
+        accessToken: null,
+        accessTokenExpiresAt: null,
+      };
+    }),
+  syncPersistedAuthState: () =>
+    set(() => {
+      const authSession = loadAuthSession();
+      const { accessToken, accessTokenExpiresAt } = loadGoogleAccessToken();
+      return {
+        authSession,
+        accessToken,
+        accessTokenExpiresAt,
       };
     }),
   bumpDataVersion: () =>
