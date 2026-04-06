@@ -18,6 +18,7 @@ import { useAppStore } from "@/store/useAppStore";
 import { CreateChallengePage } from "@/pages/CreateChallengePage/CreateChallengePage";
 import { DashboardPage } from "@/pages/DashboardPage/DashboardPage";
 import { ChallengeDetailPage } from "@/pages/ChallengeDetailPage/ChallengeDetailPage";
+import { EditChallengePage } from "@/pages/EditChallengePage/EditChallengePage";
 import { HistoryPage } from "@/pages/HistoryPage/HistoryPage";
 import { SettingsPage } from "@/pages/SettingsPage/SettingsPage";
 import { WelcomePage } from "@/pages/WelcomePage/WelcomePage";
@@ -132,6 +133,10 @@ const routes = [
           {
             path: "/challenge/new",
             element: <CreateChallengePage />,
+          },
+          {
+            path: "/challenge/:challengeId/edit",
+            element: <EditChallengePage />,
           },
           {
             path: "/challenge/:challengeId",

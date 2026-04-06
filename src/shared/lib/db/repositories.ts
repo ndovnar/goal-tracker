@@ -1,6 +1,7 @@
 import {
   createChallengeDayStates,
   createChallengeSummary,
+  getDerivedStatus,
   getHabitAdherence,
 } from "@/features/challenges/model/challengeSelectors";
 import { mergeSnapshots } from "@/features/sync/api/merge";
@@ -8,6 +9,7 @@ import {
   getChallengeEndDate,
   getNowIso,
   getTodayDateKey,
+  isDateWithinRange,
 } from "@/shared/lib/date";
 import { createId } from "@/shared/lib/ids";
 import { translateCurrent } from "@/shared/lib/i18n";
@@ -78,6 +80,25 @@ function createDeletedRecord(
     entityId,
     deletedAt,
   };
+}
+
+function getEffectiveRequiredItemIds(
+  checklistItems: ChecklistItem[],
+): string[] {
+  const requiredItemIds = checklistItems
+    .filter((item) => item.isRequired)
+    .map((item) => item.id);
+  return requiredItemIds.length > 0
+    ? requiredItemIds
+    : checklistItems.map((item) => item.id);
+}
+
+function hasSameStringItems(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+  const leftSet = new Set(left);
+  return right.every((item) => leftSet.has(item));
 }
 
 async function createPendingChange(
@@ -210,6 +231,206 @@ export async function createChallenge(
     },
   );
   return challengeId;
+}
+
+export async function updateChallenge(
+  challengeId: string,
+  values: ChallengeFormValues,
+): Promise<void> {
+  const challenge = await db.challenges.get(challengeId);
+  if (!challenge) {
+    throw new Error(translateCurrent("errors.challengeNotFound"));
+  }
+  const [existingChecklistItems, existingDailyEntries] = await Promise.all([
+    db.checklistItems.where("challengeId").equals(challengeId).sortBy("order"),
+    db.dailyEntries.where("challengeId").equals(challengeId).toArray(),
+  ]);
+  const now = getNowIso();
+  const nextChallenge: Challenge = {
+    ...challenge,
+    title: values.title.trim(),
+    description: values.description?.trim() ?? "",
+    durationDays: values.durationDays,
+    startDate: values.startDate,
+    endDate: getChallengeEndDate(values.startDate, values.durationDays),
+    updatedAt: now,
+  };
+  const existingChecklistById = new Map(
+    existingChecklistItems.map((item) => [item.id, item]),
+  );
+  const nextChecklistItems: ChecklistItem[] = values.checklistItems.map(
+    (item, index) => {
+      const existingItem = existingChecklistById.get(item.id);
+      if (existingItem) {
+        return {
+          ...existingItem,
+          label: item.label.trim(),
+          order: index,
+          isRequired: item.isRequired,
+          archived: false,
+          updatedAt: now,
+        };
+      }
+      return {
+        id: createId("item"),
+        challengeId,
+        label: item.label.trim(),
+        order: index,
+        isRequired: item.isRequired,
+        archived: false,
+        createdAt: now,
+        updatedAt: now,
+      };
+    },
+  );
+  const nextChecklistIds = new Set(nextChecklistItems.map((item) => item.id));
+  const removedChecklistItems = existingChecklistItems.filter(
+    (item) => !nextChecklistIds.has(item.id),
+  );
+  const checklistStructureChanged =
+    nextChecklistItems.length !== existingChecklistItems.length ||
+    nextChecklistItems.some((item) => !existingChecklistById.has(item.id)) ||
+    existingChecklistItems.some(
+      (item) =>
+        !nextChecklistIds.has(item.id) ||
+        nextChecklistItems.find((candidate) => candidate.id === item.id)
+          ?.isRequired !== item.isRequired,
+    );
+  const entriesInsideRange = existingDailyEntries.filter((entry) =>
+    isDateWithinRange(
+      entry.date,
+      nextChallenge.startDate,
+      nextChallenge.endDate,
+    ),
+  );
+  const entriesOutsideRange = existingDailyEntries.filter(
+    (entry) =>
+      !isDateWithinRange(
+        entry.date,
+        nextChallenge.startDate,
+        nextChallenge.endDate,
+      ),
+  );
+  const entriesToUpdate: DailyEntry[] = [];
+  if (checklistStructureChanged || removedChecklistItems.length > 0) {
+    const effectiveRequiredItemIds =
+      getEffectiveRequiredItemIds(nextChecklistItems);
+    for (const entry of entriesInsideRange) {
+      const nextCheckedItemIds = entry.checkedItemIds.filter((itemId) =>
+        nextChecklistIds.has(itemId),
+      );
+      const nextCompleted = effectiveRequiredItemIds.every((itemId) =>
+        nextCheckedItemIds.includes(itemId),
+      );
+      const nextDerivedStatus = getDerivedStatus(
+        entry.date,
+        nextCheckedItemIds,
+        nextChecklistItems,
+      );
+      if (
+        hasSameStringItems(nextCheckedItemIds, entry.checkedItemIds) &&
+        nextCompleted === entry.completed &&
+        nextDerivedStatus === entry.derivedStatus
+      ) {
+        continue;
+      }
+      entriesToUpdate.push({
+        ...entry,
+        checkedItemIds: nextCheckedItemIds,
+        completed: nextCompleted,
+        derivedStatus: nextDerivedStatus,
+        updatedAt: now,
+        syncStatus: "pending",
+      });
+    }
+  }
+  const deletedRecords: DeletedRecord[] = [
+    ...removedChecklistItems.map((item) =>
+      createDeletedRecord("checklistItem", item.id, now),
+    ),
+    ...entriesOutsideRange.map((entry) =>
+      createDeletedRecord("dailyEntry", entry.id, now),
+    ),
+  ];
+  await db.transaction(
+    "rw",
+    [
+      db.challenges,
+      db.checklistItems,
+      db.dailyEntries,
+      db.deletedRecords,
+      db.pendingChanges,
+      db.syncMetadata,
+    ],
+    async () => {
+      await db.challenges.put(nextChallenge);
+      await db.checklistItems.bulkPut(nextChecklistItems);
+      if (removedChecklistItems.length > 0) {
+        await db.checklistItems.bulkDelete(
+          removedChecklistItems.map((item) => item.id),
+        );
+      }
+      if (entriesToUpdate.length > 0) {
+        await db.dailyEntries.bulkPut(entriesToUpdate);
+      }
+      if (entriesOutsideRange.length > 0) {
+        await db.dailyEntries.bulkDelete(
+          entriesOutsideRange.map((entry) => entry.id),
+        );
+      }
+      if (deletedRecords.length > 0) {
+        await db.deletedRecords.bulkPut(deletedRecords);
+      }
+      await createPendingChange({
+        entityType: "challenge",
+        entityId: challengeId,
+        operation: "update",
+        payload: serializePayload(nextChallenge),
+      });
+      for (const checklistItem of nextChecklistItems) {
+        await createPendingChange({
+          entityType: "checklistItem",
+          entityId: checklistItem.id,
+          operation: existingChecklistById.has(checklistItem.id)
+            ? "update"
+            : "create",
+          payload: serializePayload(checklistItem),
+        });
+      }
+      for (const checklistItem of removedChecklistItems) {
+        await createPendingChange({
+          entityType: "checklistItem",
+          entityId: checklistItem.id,
+          operation: "delete",
+          payload: serializePayload({
+            checklistItemId: checklistItem.id,
+            challengeId,
+            deletedAt: now,
+          }),
+        });
+      }
+      for (const entry of entriesToUpdate) {
+        await createPendingChange({
+          entityType: "dailyEntry",
+          entityId: entry.id,
+          operation: "update",
+          payload: serializePayload(entry),
+        });
+      }
+      for (const entry of entriesOutsideRange) {
+        await createPendingChange({
+          entityType: "dailyEntry",
+          entityId: entry.id,
+          operation: "delete",
+          payload: serializePayload({
+            dailyEntryId: entry.id,
+            challengeId,
+            deletedAt: now,
+          }),
+        });
+      }
+    },
+  );
 }
 
 export async function upsertDailyEntry(

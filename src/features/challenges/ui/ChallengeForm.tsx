@@ -12,27 +12,35 @@ import {
   type ChallengeFormValues,
 } from "@/shared/types/schemas";
 
-const defaultValues: ChallengeFormValues = {
-  title: "",
-  description: "",
-  durationDays: 60,
-  startDate: getTodayDateKey(),
-  checklistItems: [
-    {
-      id: createId("draft"),
-      label: "",
-      isRequired: true,
-      order: 0,
-    },
-  ],
-};
+function createDefaultValues(): ChallengeFormValues {
+  return {
+    title: "",
+    description: "",
+    durationDays: 60,
+    startDate: getTodayDateKey(),
+    checklistItems: [
+      {
+        id: createId("draft"),
+        label: "",
+        isRequired: true,
+        order: 0,
+      },
+    ],
+  };
+}
 
 export function ChallengeForm({
   onSubmit,
   submitting,
+  initialValues,
+  submitLabel,
+  submittingLabel,
 }: {
   onSubmit: (values: ChallengeFormValues) => Promise<void>;
   submitting: boolean;
+  initialValues?: ChallengeFormValues;
+  submitLabel?: string;
+  submittingLabel?: string;
 }): JSX.Element {
   const { locale, t } = useI18n();
   const {
@@ -42,7 +50,7 @@ export function ChallengeForm({
     formState: { errors },
   } = useForm<ChallengeFormValues>({
     resolver: zodResolver(getChallengeFormSchema(locale)),
-    defaultValues,
+    defaultValues: initialValues ?? createDefaultValues(),
   });
   const { fields, append, remove } = useFieldArray({
     control,
@@ -147,8 +155,8 @@ export function ChallengeForm({
       </Card>
       <Button type="submit" fullWidth disabled={submitting}>
         {submitting
-          ? t("createChallenge.form.creatingChallenge")
-          : t("createChallenge.form.createChallenge")}
+          ? (submittingLabel ?? t("createChallenge.form.creatingChallenge"))
+          : (submitLabel ?? t("createChallenge.form.createChallenge"))}
       </Button>
     </form>
   );

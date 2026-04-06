@@ -106,6 +106,12 @@ export function ChallengeDetailPage(): JSX.Element {
           <div className="flex flex-col items-end gap-3">
             <StatusBadge value={data.summary.todayStatus} />
             <Button
+              variant="secondary"
+              onClick={() => navigate(`/challenge/${resolvedChallengeId}/edit`)}
+            >
+              {t("challengeDetail.editChallenge")}
+            </Button>
+            <Button
               variant="danger"
               disabled={isDeleting}
               onClick={() => void handleDeleteChallenge()}

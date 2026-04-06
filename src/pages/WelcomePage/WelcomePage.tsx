@@ -62,13 +62,15 @@ export function WelcomePage(): JSX.Element {
               <p className="text-sm font-medium text-slate-500">
                 {t("welcome.offlineFirst")}
               </p>
-              <p className="mt-4 text-3xl font-semibold text-ink">IndexedDB</p>
+              <p className="mt-4 break-words text-2xl font-semibold text-ink lg:text-3xl">
+                IndexedDB
+              </p>
             </div>
             <div className="rounded-[28px] border border-slate-200/80 bg-slate-50/86 p-5 shadow-card backdrop-blur">
               <p className="text-sm font-medium text-slate-500">
                 {t("welcome.cloudBackup")}
               </p>
-              <p className="mt-4 text-3xl font-semibold text-ink">
+              <p className="mt-4 break-words text-2xl font-semibold text-ink lg:text-3xl">
                 Drive appData
               </p>
             </div>
@@ -76,7 +78,7 @@ export function WelcomePage(): JSX.Element {
               <p className="text-sm font-medium text-slate-500">
                 {t("welcome.dailyCheckIns")}
               </p>
-              <p className="mt-4 text-3xl font-semibold text-ink">
+              <p className="mt-4 break-words text-2xl font-semibold text-ink lg:text-3xl">
                 {t("welcome.autosave")}
               </p>
             </div>

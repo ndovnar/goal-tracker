@@ -51,9 +51,7 @@ export function SignInCard({
           disabled={connecting || !hasGoogleAuthConfig()}
           onClick={() => void onConnect()}
         >
-          {connecting
-            ? t("signIn.connectingGoogle")
-            : t("signIn.connectGoogle")}
+          {connecting ? t("auth.loggingIn") : t("auth.logIn")}
         </Button>
         <Button fullWidth variant="secondary" onClick={onContinueLocal}>
           {t("signIn.continueLocalOnly")}

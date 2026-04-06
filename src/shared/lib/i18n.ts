@@ -128,12 +128,25 @@ const translations = {
         createChallenge: "Create challenge",
       },
     },
+    editChallenge: {
+      loadingTitle: "Edit challenge",
+      title: "Edit challenge",
+      description:
+        "Update challenge settings and checklist items. Changes apply immediately and sync in the background.",
+      updated: "Challenge updated.",
+      updateError: "Unable to update the challenge.",
+      form: {
+        savingChallenge: "Saving changes...",
+        saveChallenge: "Save changes",
+      },
+    },
     challengeDetail: {
       loadingTitle: "Challenge detail",
       completion: "Completion",
       completedDays: "Completed days",
       currentStreak: "Current streak",
       longestStreak: "Longest streak",
+      editChallenge: "Edit challenge",
       deleteChallenge: "Delete challenge",
       deletingChallenge: "Deleting...",
       deleteConfirm:
@@ -359,12 +372,25 @@ const translations = {
         createChallenge: "Создать челлендж",
       },
     },
+    editChallenge: {
+      loadingTitle: "Редактирование челленджа",
+      title: "Редактировать челлендж",
+      description:
+        "Обновляйте параметры челленджа и пункты чеклиста. Изменения применяются сразу и синхронизируются в фоне.",
+      updated: "Челлендж обновлен.",
+      updateError: "Не удалось обновить челлендж.",
+      form: {
+        savingChallenge: "Сохраняем изменения...",
+        saveChallenge: "Сохранить изменения",
+      },
+    },
     challengeDetail: {
       loadingTitle: "Детали челленджа",
       completion: "Выполнение",
       completedDays: "Выполненные дни",
       currentStreak: "Текущий стрик",
       longestStreak: "Лучший стрик",
+      editChallenge: "Редактировать",
       deleteChallenge: "Удалить челлендж",
       deletingChallenge: "Удаление...",
       deleteConfirm:
